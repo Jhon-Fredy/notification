@@ -1,31 +1,29 @@
-pipeline{
+pipeline {
     agent any
 
     stages {
 
-        stage('Despliegue QA Notificacion'){
-            steps{
-                echo 'Desplegando en QA Notificacion '
+        stage('Despliegue QA') {
+            steps {
+                echo 'Desplegando en QA'
             }
         }
-        stage('Aprobacion manual'){
+        stage('Aprobacion manual') {
             input {
-                message "Esta seguro que desea desplegar a produccion?"
+                message "Esta seguro que desea desplegar a producción?"
                 ok "Aprobar"
                 parameters {
-                    string(name: 'comentario', defaultValue: '', description: 'Deje aqui')
+                    string(name: 'comentario', defaultValue: '', description: 'Deje aquí su comentario')
                 }
             }
-
             steps {
                 echo "${comentario}"
             }
         }
-
-        stage('Despliegue PROD Notificacion...'){
+        stage('Despliegue PROD') {
             steps {
-                echo "Desplegando en produccion Notifi"
-                sh "./mvnw package -Pprod verify -DskipTest jib:dockerBuild"
+                echo "Desplegando en producción...."
+                sh "./mvnw package -Pprod verify -DskipTests jib:dockerBuild"
                 sh "docker-compose -f ./src/main/docker/app.yml up -d --build"
             }
         }
